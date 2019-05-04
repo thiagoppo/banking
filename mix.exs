@@ -39,7 +39,7 @@ defmodule Banking.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-
+      {:plug_cowboy, "~> 1.0"},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end
@@ -54,7 +54,7 @@ defmodule Banking.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

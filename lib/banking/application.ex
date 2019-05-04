@@ -1,4 +1,8 @@
 defmodule Banking.Application do
+  @moduledoc """
+  Banking Application
+  """
+
   use Application
 
   # See https://hexdocs.pm/elixir/Application.html
