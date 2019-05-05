@@ -38,6 +38,15 @@ defmodule Banking.User.UserTest do
       assert result.valid? == false
       assert result.errors[:email] == {"has already been taken", []}
     end
+
+    test "changeset email is invalid" do
+      attrs = %{@create_attrs | email: "teste"}
+      changeset = User.changeset(%User{}, attrs)
+      assert changeset.valid? == false
+      assert %{
+        email: ["has invalid format"]
+      } = errors_on(changeset)
+    end
   end
 
 end

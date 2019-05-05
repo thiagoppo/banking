@@ -16,6 +16,7 @@ defmodule Banking.User do
     user
     |> cast(params, [:email, :name, :password])
     |> validate_required([:email, :name, :password])
+    |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
   end
 end
