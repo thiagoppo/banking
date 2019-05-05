@@ -10,7 +10,15 @@ defmodule Banking.Mixfile do
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      # Test
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -40,7 +48,10 @@ defmodule Banking.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+      # Lint
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      # Test
+      {:excoveralls, "~> 0.11.0", only: :test}
     ]
   end
 

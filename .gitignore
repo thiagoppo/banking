@@ -1,6 +1,5 @@
 # App artifacts
 /_build
-/.elixir_ls
 /db
 /deps
 /*.ez
@@ -16,4 +15,6 @@ erl_crash.dump
 # variables.
 /config/*.secret.exs
 
+/.elixir_ls
 .db
+cover
