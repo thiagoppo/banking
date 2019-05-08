@@ -2,12 +2,13 @@
 
 - Elixir
 - Phoenix
-- Postgresql
+- Ecto
+- Postgres
 - Docker
 
 To start your Project:
 
-  * Start container docker `docker-compose up`
+  * Start container docker `docker-compose up -d`
   * http://localhost:4000
   * Run tests `docker exec -it banking_app bash mix test`
 
