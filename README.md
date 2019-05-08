@@ -1,19 +1,20 @@
 # Banking
 
-To start your Phoenix server:
+- Elixir
+- Phoenix
+- Postgresql
+- Docker
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Start Phoenix endpoint with `mix phx.server`
+To start your Project:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+  * Start container docker `docker-compose up`
+  * http://localhost:4000
+  * Run tests `docker exec -it banking_app bash mix test`
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+Documentation:
+- POST /api/v1/auth -> Authenticate user (email, password)
+- POST /api/v1/users -> Create user and account (name, email, password)
+- GET /api/v1/users/:id/accounts/:id -> View account details
+- POST /api/v1/users/:id/accounts/:id/draw_out -> Cash out of account (value)
+- POST /api/v1/users/:id/accounts/:id/transfer -> Transfers money to another account (account_id, value)
+- GET /api/v1/users/:id/accounts/:id/transactions -> View account transactions
