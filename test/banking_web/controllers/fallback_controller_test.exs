@@ -4,7 +4,7 @@ defmodule BankingWeb.FallbackControllerTest do
   test "renders error changeset", %{conn: conn} do
     changeset = Banking.User.changeset(%Banking.User{}, %{})
     response = BankingWeb.FallbackController.call(conn, {:error, changeset})
-    expected_body = %{errors: %{email: ["can't be blank"], name: ["can't be blank"], password: ["can't be blank"]}} |> Poison.encode!
+    expected_body = %{errors: %{email: ["can't be blank"], name: ["can't be blank"], password: ["can't be blank"]}} |> Jason.encode!
 
     assert response.status == 422
     assert response.resp_body == expected_body
@@ -12,7 +12,7 @@ defmodule BankingWeb.FallbackControllerTest do
 
   test "renders error not_found", %{conn: conn} do
     response = BankingWeb.FallbackController.call(conn, {:error, :not_found})
-    expected_body = %{errors: %{detail: "Not Found"}} |> Poison.encode!
+    expected_body = %{errors: %{detail: "Not Found"}} |> Jason.encode!
 
     assert response.status == 404
     assert response.resp_body == expected_body
@@ -20,7 +20,7 @@ defmodule BankingWeb.FallbackControllerTest do
 
   test "renders error unauthorized", %{conn: conn} do
     response = BankingWeb.FallbackController.call(conn, {:error, :unauthorized})
-    expected_body = %{errors: %{detail: "Unauthorized"}} |> Poison.encode!
+    expected_body = %{errors: %{detail: "Unauthorized"}} |> Jason.encode!
 
     assert response.status == 401
     assert response.resp_body == expected_body
@@ -28,7 +28,7 @@ defmodule BankingWeb.FallbackControllerTest do
 
   test "renders error not_allowed", %{conn: conn} do
     response = BankingWeb.FallbackController.call(conn, {:error, :bad_request})
-    expected_body = %{errors: %{detail: "Bad Request"}} |> Poison.encode!
+    expected_body = %{errors: %{detail: "Bad Request"}} |> Jason.encode!
 
     assert response.status == 400
     assert response.resp_body == expected_body

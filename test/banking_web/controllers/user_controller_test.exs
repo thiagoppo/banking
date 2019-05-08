@@ -19,7 +19,7 @@ defmodule BankingWeb.UserControllerTest do
     setup [:fixture]
 
     test "renders lists all users", %{conn: conn, user: user} do
-      conn = get(conn, user_path(conn, :index))
+      conn = get(conn, Routes.user_path(conn, :index))
       assert json_response(conn, 200) == [
         %{
           "id" => user.id,
@@ -34,7 +34,7 @@ defmodule BankingWeb.UserControllerTest do
     setup [:fixture]
 
     test "renders user detail", %{conn: conn, user: user} do
-      conn = get(conn, user_path(conn, :show, user.id))
+      conn = get(conn, Routes.user_path(conn, :show, user.id))
       assert json_response(conn, 200) == %{
         "id" => user.id,
         "name" => user.name,
@@ -45,12 +45,12 @@ defmodule BankingWeb.UserControllerTest do
 
   describe "POST /users - create user" do
     test "renders user when data is valid", %{conn: conn} do
-      conn = post(conn, user_path(conn, :create), @create_attrs)
+      conn = post(conn, Routes.user_path(conn, :create), @create_attrs)
       assert %{"email" => email} = json_response(conn, 201)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, user_path(conn, :create), @invalid_attrs)
+      conn = post(conn, Routes.user_path(conn, :create), @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end

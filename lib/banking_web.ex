@@ -20,23 +20,25 @@ defmodule BankingWeb do
   def controller do
     quote do
       use Phoenix.Controller, namespace: BankingWeb
+
       import Plug.Conn
-      import BankingWeb.Router.Helpers
       import BankingWeb.Gettext
+      alias BankingWeb.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/banking_web/templates",
-                        namespace: BankingWeb
+      use Phoenix.View,
+        root: "lib/banking_web/templates",
+        namespace: BankingWeb
 
       # Import convenience functions from controllers
-      import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
+      import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
 
-      import BankingWeb.Router.Helpers
       import BankingWeb.ErrorHelpers
       import BankingWeb.Gettext
+      alias BankingWeb.Router.Helpers, as: Routes
     end
   end
 

@@ -36,7 +36,7 @@ defmodule Banking.User.UserTest do
         |> Repo.insert()
 
       assert result.valid? == false
-      assert result.errors[:email] == {"has already been taken", []}
+      assert result.errors[:email] == {"has already been taken", [constraint: :unique, constraint_name: "users_email_index"]}
     end
 
     test "changeset email is invalid" do
