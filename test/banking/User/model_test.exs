@@ -7,7 +7,7 @@ defmodule Banking.User.UserTest do
   @create_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
   @invalid_attrs %{name: nil, email: nil, password: nil}
 
-  def fixture(_) do
+  def fixture() do
     {:ok, user} = UserService.create(@create_attrs)
     {:ok, user: user}
   end
@@ -29,7 +29,7 @@ defmodule Banking.User.UserTest do
     end
 
     test "changeset email is unique" do
-      fixture(%{})
+      fixture()
 
       {:error, result} = %User{}
         |> User.changeset(@create_attrs)

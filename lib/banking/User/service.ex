@@ -1,6 +1,7 @@
 defmodule Banking.UserService do
   alias Banking.Repo
   alias Banking.User
+  alias Banking.AccountService
 
   def all() do
     Repo.all(User)
@@ -11,9 +12,10 @@ defmodule Banking.UserService do
   end
 
   def create(params \\ %{}) do
-    %User{}
-    |> User.changeset(params)
-    |> Repo.insert()
+    with {:ok, user} <- User.changeset(%User{}, params) |> Repo.insert() do
+      AccountService.create(user, %{value: 1000.00})
+      {:ok, user}
+    end
   end
 
   def update(%User{} = user, params) do

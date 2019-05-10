@@ -37,6 +37,14 @@ defmodule Banking.User.UserServiceTest do
       assert user.password == "teste"
     end
 
+    test "create user and account with value 1000.00" do
+      assert {:ok, %User{} = user} = UserService.create(@create_attrs)
+      user = Repo.get_by!(User, id: user.id) |> Repo.preload(:account)
+
+      assert user.email == "teste@teste.com"
+      assert user.account.value == 1000.00
+    end
+
     test "create user with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = UserService.create(@invalid_attrs)
     end
@@ -46,8 +54,7 @@ defmodule Banking.User.UserServiceTest do
     setup [:fixture]
 
     test "update user with valid data updates the user", %{user: user} do
-      assert {:ok, user} = UserService.update(user, @update_attrs)
-      assert %User{} = user
+      assert {:ok, %User{} = user} = UserService.update(user, @update_attrs)
       assert user.name == "Teste2"
       assert user.email == "teste2@teste.com"
       assert user.password == "teste2"
@@ -59,13 +66,13 @@ defmodule Banking.User.UserServiceTest do
     end
   end
 
-  describe "delete/1" do
-    setup [:fixture]
+  # describe "delete/1" do
+  #   setup [:fixture]
 
-    test "delete user deletes the user", %{user: user} do
-      assert {:ok, %User{}} = UserService.delete(user.id)
-      assert_raise Ecto.NoResultsError, fn -> UserService.get!(user.id) end
-    end
-  end
+  #   test "delete user deletes the user", %{user: user} do
+  #     assert {:ok, %User{}} = UserService.delete(user.id)
+  #     assert_raise Ecto.NoResultsError, fn -> UserService.get!(user.id) end
+  #   end
+  # end
 
 end

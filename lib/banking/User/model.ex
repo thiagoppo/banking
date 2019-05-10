@@ -3,11 +3,13 @@ defmodule Banking.User do
   import Ecto.Changeset
 
   alias Banking.User
+  alias Banking.Account
 
   schema "users" do
     field :email, :string
     field :name, :string
     field :password, :string
+    has_one :account, Account
 
     timestamps()
   end
