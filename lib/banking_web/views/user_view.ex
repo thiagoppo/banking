@@ -2,11 +2,13 @@ defmodule BankingWeb.UserView do
   use BankingWeb, :view
   alias BankingWeb.UserView
 
+
   def render("user.json", %{user: user}) do
     %{
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      account: %{id: user.account.id}
     }
   end
 

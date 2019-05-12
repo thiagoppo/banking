@@ -24,7 +24,8 @@ defmodule BankingWeb.UserControllerTest do
         %{
           "id" => user.id,
           "name" => user.name,
-          "email" => user.email
+          "email" => user.email,
+          "account" => %{"id" => user.account.id}
         }
       ]
     end
@@ -38,7 +39,8 @@ defmodule BankingWeb.UserControllerTest do
       assert json_response(conn, 200) == %{
         "id" => user.id,
         "name" => user.name,
-        "email" => user.email
+        "email" => user.email,
+        "account" => %{"id" => user.account.id}
       }
     end
   end

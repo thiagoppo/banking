@@ -17,15 +17,16 @@ defmodule Banking.AccountService do
     |> Repo.insert()
   end
 
+  def draw_out(id, value) do
+    account = get!(id)
+    value = account.value - value
+    update(account, %{value: value})
+  end
+
   def update(%Account{} = account, params) do
     account
     |> Account.changeset(params)
     |> Repo.update()
-  end
-
-  def delete(id) do
-    Repo.get!(Account, id)
-    |> Repo.delete()
   end
 
 end

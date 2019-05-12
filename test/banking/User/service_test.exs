@@ -5,7 +5,6 @@ defmodule Banking.User.UserServiceTest do
   alias Banking.UserService
 
   @create_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
-  @update_attrs %{name: "Teste2", email: "teste2@teste.com", password: "teste2"}
   @invalid_attrs %{name: nil, email: nil, password: nil}
 
   def fixture(_) do
@@ -49,30 +48,5 @@ defmodule Banking.User.UserServiceTest do
       assert {:error, %Ecto.Changeset{}} = UserService.create(@invalid_attrs)
     end
   end
-
-  describe "update/2" do
-    setup [:fixture]
-
-    test "update user with valid data updates the user", %{user: user} do
-      assert {:ok, %User{} = user} = UserService.update(user, @update_attrs)
-      assert user.name == "Teste2"
-      assert user.email == "teste2@teste.com"
-      assert user.password == "teste2"
-    end
-
-    test "update user with invalid data returns error changeset", %{user: user} do
-      assert {:error, %Ecto.Changeset{}} = UserService.update(user, @invalid_attrs)
-      assert user.email == UserService.get!(user.id).email
-    end
-  end
-
-  # describe "delete/1" do
-  #   setup [:fixture]
-
-  #   test "delete user deletes the user", %{user: user} do
-  #     assert {:ok, %User{}} = UserService.delete(user.id)
-  #     assert_raise Ecto.NoResultsError, fn -> UserService.get!(user.id) end
-  #   end
-  # end
 
 end

@@ -15,7 +15,8 @@ To start your Project:
 Documentation:
 - POST /api/v1/auth -> Authenticate user (email, password)
 - POST /api/v1/users -> Create user and account (name, email, password)
-- GET /api/v1/users/:id/accounts/:id -> View account details
-- POST /api/v1/users/:id/accounts/:id/draw_out -> Cash out of account (value)
-- POST /api/v1/users/:id/accounts/:id/transfer -> Transfers money to another account (account_id, value)
-- GET /api/v1/users/:id/accounts/:id/transactions -> View account transactions
+- GET /api/v1/users/:id -> View user details
+- GET /api/v1/users/:id/accounts/:account_id -> View account details
+- POST /api/v1/users/:id/accounts/:account_id/draw_out -> Cash out of account (value)
+- POST /api/v1/users/:id/accounts/:account_id/transfer -> Transfers money to another account (account_id, value)
+- GET /api/v1/users/:id/accounts/:account_id/transactions -> View account transactions

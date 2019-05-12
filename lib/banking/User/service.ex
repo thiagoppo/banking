@@ -4,29 +4,19 @@ defmodule Banking.UserService do
   alias Banking.AccountService
 
   def all() do
-    Repo.all(User)
+    Repo.all(User) |> Repo.preload(:account)
   end
 
   def get!(id) do
-    Repo.get!(User, id)
+    Repo.get!(User, id) |> Repo.preload(:account)
   end
 
   def create(params \\ %{}) do
     with {:ok, user} <- User.changeset(%User{}, params) |> Repo.insert() do
-      AccountService.create(user, %{value: 1000.00})
+      {:ok, account} = AccountService.create(user, %{value: 1000.00})
+      user = Map.put(user, :account, account)
       {:ok, user}
     end
-  end
-
-  def update(%User{} = user, params) do
-    user
-    |> User.changeset(params)
-    |> Repo.update()
-  end
-
-  def delete(id) do
-    Repo.get!(User, id)
-    |> Repo.delete()
   end
 
 end

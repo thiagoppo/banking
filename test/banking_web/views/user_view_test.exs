@@ -3,7 +3,7 @@ defmodule BankingWeb.UserViewTest do
   import Phoenix.View
 
   setup do
-    user = %{id: 1, name: "teste", email: "teste@teste.com"}
+    user = %{id: 1, name: "teste", email: "teste@teste.com", account: %{id: 1}}
     {:ok, user: user}
   end
 

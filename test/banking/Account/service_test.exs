@@ -71,12 +71,18 @@ defmodule Banking.Account.AccountServiceTest do
     end
   end
 
-  describe "delete/1" do
+  describe "draw_out/2" do
     setup [:fixture]
 
-    test "delete account deletes the account", %{account: account} do
-      assert {:ok, %Account{}} = AccountService.delete(account.id)
-      assert_raise Ecto.NoResultsError, fn -> AccountService.get!(account.id) end
+    test "successfully withdraw from an account", %{user: user, account: account} do
+      assert {:ok, %Account{} = account} = AccountService.draw_out(account.id, 4.00)
+      assert account.user_id == user.id
+      assert account.value == 11.00
+    end
+
+    test "update account with invalid data returns error changeset", %{account: account} do
+      assert {:error, %Ecto.Changeset{}} = AccountService.update(account, @invalid_attrs)
+      assert account.value == AccountService.get!(account.id).value
     end
   end
 
