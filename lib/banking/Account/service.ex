@@ -1,4 +1,5 @@
 defmodule Banking.AccountService do
+  alias Banking.Support.Email.EmailService
   alias Banking.Repo
   alias Banking.Account
   alias Banking.User
@@ -20,7 +21,10 @@ defmodule Banking.AccountService do
   def draw_out(id, value) do
     account = get!(id)
     value = account.value - value
-    update(account, %{value: value})
+    with {:ok, account } <- update(account, %{value: value}) do
+      EmailService.send("A draw was made to your account. Your current balance is #{value}")
+      {:ok, account}
+    end
   end
 
   def update(%Account{} = account, params) do
