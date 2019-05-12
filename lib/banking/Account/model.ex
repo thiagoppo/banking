@@ -17,5 +17,15 @@ defmodule Banking.Account do
     |> cast(params, [:value])
     |> cast_assoc(:user)
     |> validate_required([:value])
+    |> validate_is_not_negative(:value)
+  end
+
+  defp validate_is_not_negative(changeset, field) do
+    value = get_field(changeset, field)
+    if value < 0.00 do
+      add_error(changeset, field, "can't be negative")
+    else
+      changeset
+    end
   end
 end

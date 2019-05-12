@@ -36,6 +36,28 @@ defmodule Banking.Account.AccountTest do
       } = errors_on(changeset)
     end
 
+    test "changeset value is invalid" do
+      {user} = fixture()
+
+      account_with_user = Ecto.build_assoc(user, :account)
+      changeset = Account.changeset(account_with_user, %{@invalid_attrs | value: "dasadsasd"})
+      assert changeset.valid? == false
+      assert %{
+        value: ["is invalid"]
+      } = errors_on(changeset)
+    end
+
+    test "changeset value is not negative" do
+      {user} = fixture()
+
+      account_with_user = Ecto.build_assoc(user, :account)
+      changeset = Account.changeset(account_with_user, %{@invalid_attrs | value: -1.00})
+      assert changeset.valid? == false
+      assert %{
+        value: ["can't be negative"]
+      } = errors_on(changeset)
+    end
+
   end
 
 end

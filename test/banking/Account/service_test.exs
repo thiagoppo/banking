@@ -80,6 +80,11 @@ defmodule Banking.Account.AccountServiceTest do
       assert account.value == 11.00
     end
 
+    test "should not draw if the final result", %{account: account} do
+      assert {:error, %Ecto.Changeset{}} = AccountService.draw_out(account.id, 16.00)
+      assert AccountService.get!(account.id) == account
+    end
+
     test "update account with invalid data returns error changeset", %{account: account} do
       assert {:error, %Ecto.Changeset{}} = AccountService.update(account, @invalid_attrs)
       assert account.value == AccountService.get!(account.id).value
