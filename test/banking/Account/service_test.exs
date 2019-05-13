@@ -5,22 +5,23 @@ defmodule Banking.Account.AccountServiceTest do
   alias Banking.AccountService
   alias Banking.User
 
+  @user_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
   @create_attrs %{value: 15.00}
   @update_attrs %{value: 10.00}
   @invalid_attrs %{value: nil}
 
-  def create_user() do
-    User.changeset(%User{}, %{name: "Teste", email: "teste@teste.com", password: "teste"}) |> Repo.insert()
+  def create_user(params) do
+    User.changeset(%User{}, params) |> Repo.insert()
   end
 
-  def create_account(user) do
+  def create_account(user, params) do
     account_with_user = Ecto.build_assoc(user, :account)
-    Account.changeset(account_with_user, @create_attrs) |> Repo.insert()
+    Account.changeset(account_with_user, params) |> Repo.insert()
   end
 
   def fixture(_) do
-    {:ok, user} = create_user()
-    {:ok, account} = create_account(user)
+    {:ok, user} = create_user(@user_attrs)
+    {:ok, account} = create_account(user, @create_attrs)
     {:ok, user: user, account: account}
   end
 
@@ -42,7 +43,7 @@ defmodule Banking.Account.AccountServiceTest do
 
   describe "create/1" do
     test "create account with valid data creates a account" do
-      {:ok, user} = create_user()
+      {:ok, user} = create_user(@user_attrs)
 
       assert {:ok, %Account{} = account} = AccountService.create(user, @create_attrs)
       assert account.value == 15.00
@@ -50,7 +51,7 @@ defmodule Banking.Account.AccountServiceTest do
     end
 
     test "create account with invalid data returns error changeset" do
-      {:ok, user} = create_user()
+      {:ok, user} = create_user(@user_attrs)
 
       assert {:error, %Ecto.Changeset{}} = AccountService.create(user, @invalid_attrs)
     end
@@ -88,6 +89,28 @@ defmodule Banking.Account.AccountServiceTest do
     test "update account with invalid data returns error changeset", %{account: account} do
       assert {:error, %Ecto.Changeset{}} = AccountService.update(account, @invalid_attrs)
       assert account.value == AccountService.get!(account.id).value
+    end
+  end
+
+  describe "transfer/3" do
+    setup [:fixture]
+
+    test "should transfer value successfully", %{account: account} do
+      {:ok, destiny_user} = create_user(%{@user_attrs | email: "teste2@teste.com"})
+      {:ok, destiny_account} = create_account(destiny_user, @create_attrs)
+
+      assert {:ok, %Account{} = account} = AccountService.transfer(account.id, destiny_account.id, 4.00)
+      assert account.value == 11.00
+      assert AccountService.get!(destiny_account.id).value == 19.00
+    end
+
+    test "not transfer when the account balance is negative", %{account: account} do
+      {:ok, destiny_user} = create_user(%{@user_attrs | email: "teste2@teste.com"})
+      {:ok, destiny_account} = create_account(destiny_user, @create_attrs)
+
+      assert {:error, %Ecto.Changeset{}} = AccountService.transfer(account.id, destiny_account.id, 16.00)
+      assert AccountService.get!(account.id).value == 15.00
+      assert AccountService.get!(destiny_account.id).value == 15.00
     end
   end
 

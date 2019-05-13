@@ -27,6 +27,21 @@ defmodule Banking.AccountService do
     end
   end
 
+  def transfer(from_id, destiny_id, value) do
+    from_account = get!(from_id)
+    destiny_account = get!(destiny_id)
+
+    from_account_value = from_account.value - value
+    destiny_account_value = destiny_account.value + value
+
+    case update(from_account, %{value: from_account_value}) do
+      {:ok, _} ->
+        update(destiny_account, %{value: destiny_account_value})
+        {:ok, get!(from_id)}
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
   def update(%Account{} = account, params) do
     account
     |> Account.changeset(params)

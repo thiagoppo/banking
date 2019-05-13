@@ -53,7 +53,7 @@ defmodule BankingWeb.UserControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      assert json_response(conn, 400)["errors"] != %{}
     end
   end
 

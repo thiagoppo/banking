@@ -6,7 +6,7 @@ defmodule BankingWeb.FallbackControllerTest do
     response = BankingWeb.FallbackController.call(conn, {:error, changeset})
     expected_body = %{errors: %{email: ["can't be blank"], name: ["can't be blank"], password: ["can't be blank"]}} |> Jason.encode!
 
-    assert response.status == 422
+    assert response.status == 400
     assert response.resp_body == expected_body
   end
 

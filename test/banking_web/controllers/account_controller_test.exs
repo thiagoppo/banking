@@ -4,19 +4,23 @@ defmodule BankingWeb.AccountControllerTest do
   alias Banking.Repo
   alias Banking.User
   alias Banking.Account
+  alias Banking.AccountService
 
-  def create_user() do
-    User.changeset(%User{}, %{name: "Teste", email: "teste@teste.com", password: "teste"}) |> Repo.insert()
+  @user_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
+  @create_attrs %{value: 15.00}
+
+  def create_user(params) do
+    User.changeset(%User{}, params) |> Repo.insert()
   end
 
-  def create_account(user) do
+  def create_account(user, params) do
     account_with_user = Ecto.build_assoc(user, :account)
-    Account.changeset(account_with_user, %{value: 15.00}) |> Repo.insert()
+    Account.changeset(account_with_user, params) |> Repo.insert()
   end
 
   def fixture(_) do
-    {:ok, user} = create_user()
-    {:ok, account} = create_account(user)
+    {:ok, user} = create_user(@user_attrs)
+    {:ok, account} = create_account(user, @create_attrs)
     {:ok, user: user, account: account}
   end
 
@@ -47,6 +51,35 @@ defmodule BankingWeb.AccountControllerTest do
         "id" => account.id,
         "value" => 10.00
       }
+    end
+  end
+
+  describe "POST /users/{id}/accounts/{account_id}/transfer - transfer" do
+    setup [:fixture]
+
+    test "should transfer value successfully", %{conn: conn, user: user, account: account} do
+      {:ok, destiny_user} = create_user(%{@user_attrs | email: "teste2@teste.com"})
+      {:ok, destiny_account} = create_account(destiny_user, @create_attrs)
+
+      payload = %{destiny_account_id: destiny_account.id, value: 5.00}
+
+      conn = post(conn, Routes.account_path(conn, :transfer, user.id, account.id), payload)
+      assert json_response(conn, 200) == %{
+        "id" => account.id,
+        "value" => 10.00
+      }
+    end
+
+    test "not transfer when the param account is negative", %{conn: conn, user: user, account: account} do
+      {:ok, destiny_user} = create_user(%{@user_attrs | email: "teste2@teste.com"})
+      {:ok, destiny_account} = create_account(destiny_user, @create_attrs)
+
+      payload = %{destiny_account_id: destiny_account.id, value: -5.00}
+
+      conn = post(conn, Routes.account_path(conn, :transfer, user.id, account.id), payload)
+      assert json_response(conn, 400) != %{}
+      assert AccountService.get!(account.id).value == 15.00
+      assert AccountService.get!(destiny_account.id).value == 15.00
     end
   end
 

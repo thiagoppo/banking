@@ -11,5 +11,6 @@ defmodule BankingWeb.Router do
     resources "/users", UserController, except: [:new, :edit, :update, :delete]
     get "/users/:id/accounts/:account_id", AccountController, :show
     post "/users/:id/accounts/:account_id/draw_out", AccountController, :draw_out
+    post "/users/:id/accounts/:account_id/transfer", AccountController, :transfer
   end
 end
