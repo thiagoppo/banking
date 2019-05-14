@@ -1,6 +1,6 @@
 variables:
   MIX_ENV: "test"
-  DATABASE_URL: postgres
+  DATABASE_URL: localhost
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
 
