@@ -1,6 +1,7 @@
 defmodule BankingWeb.AccountControllerTest do
   use BankingWeb.ConnCase
 
+  alias Banking.Guardian
   alias Banking.Repo
   alias Banking.User
   alias Banking.Account
@@ -18,6 +19,12 @@ defmodule BankingWeb.AccountControllerTest do
     Account.changeset(account_with_user, params) |> Repo.insert()
   end
 
+  def setToken(conn, user) do
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    conn = put_req_header(conn, "authorization", "Bearer #{token}")
+    {:ok, conn: conn}
+  end
+
   def fixture(_) do
     {:ok, user} = create_user(@user_attrs)
     {:ok, account} = create_account(user, @create_attrs)
@@ -32,6 +39,7 @@ defmodule BankingWeb.AccountControllerTest do
     setup [:fixture]
 
     test "renders account detail", %{conn: conn, user: user, account: account} do
+      {:ok, conn: conn} = setToken(conn, user)
       conn = get(conn, Routes.account_path(conn, :show, user.id, account.id))
       assert json_response(conn, 200) == %{
         "id" => account.id,
@@ -46,6 +54,7 @@ defmodule BankingWeb.AccountControllerTest do
     test "must successfully withdraw account value", %{conn: conn, user: user, account: account} do
       payload = %{value: 5.00}
 
+      {:ok, conn: conn} = setToken(conn, user)
       conn = post(conn, Routes.account_path(conn, :draw_out, user.id, account.id), payload)
       assert json_response(conn, 200) == %{
         "id" => account.id,
@@ -63,6 +72,7 @@ defmodule BankingWeb.AccountControllerTest do
 
       payload = %{destiny_account_id: destiny_account.id, value: 5.00}
 
+      {:ok, conn: conn} = setToken(conn, user)
       conn = post(conn, Routes.account_path(conn, :transfer, user.id, account.id), payload)
       assert json_response(conn, 200) == %{
         "id" => account.id,
@@ -76,6 +86,7 @@ defmodule BankingWeb.AccountControllerTest do
 
       payload = %{destiny_account_id: destiny_account.id, value: -5.00}
 
+      {:ok, conn: conn} = setToken(conn, user)
       conn = post(conn, Routes.account_path(conn, :transfer, user.id, account.id), payload)
       assert json_response(conn, 400) != %{}
       assert AccountService.get!(account.id).value == 15.00

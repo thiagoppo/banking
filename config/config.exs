@@ -27,3 +27,13 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+# Configures Guardian
+config :banking, Banking.Guardian,
+  issuer: "banking",
+  ttl: {1, :days},
+  token_ttl: %{
+    "refresh" => {30, :days},
+    "access" => {1, :days}
+  },
+  secret_key: "6kBnoqWblPSTn7Ms9MOEqtp80KB908uysc0LjLc0ZUTlHlIVly2iMf0enhi4WKZh"

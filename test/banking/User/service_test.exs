@@ -50,4 +50,13 @@ defmodule Banking.User.UserServiceTest do
     end
   end
 
+  describe "find_and_confirm_password/2" do
+    setup [:fixture]
+
+    test "returns the user with given email and password", %{user: user} do
+      {:ok, result} = UserService.find_and_confirm_password("teste@teste.com", "teste")
+      assert result.id == user.id
+    end
+  end
+
 end

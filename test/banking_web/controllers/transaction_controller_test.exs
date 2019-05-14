@@ -1,6 +1,7 @@
 defmodule BankingWeb.TransactionControllerTest do
   use BankingWeb.ConnCase
 
+  alias Banking.Guardian
   alias Banking.Repo
   alias Banking.User
   alias Banking.Account
@@ -24,6 +25,12 @@ defmodule BankingWeb.TransactionControllerTest do
     Transaction.changeset(transaction_with_account, params) |> Repo.insert()
   end
 
+  def setToken(conn, user) do
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    conn = put_req_header(conn, "authorization", "Bearer #{token}")
+    {:ok, conn: conn}
+  end
+
   def fixture(_) do
     {:ok, user} = create_user(@user_attrs)
     {:ok, account} = create_account(user, @account_attrs)
@@ -39,6 +46,7 @@ defmodule BankingWeb.TransactionControllerTest do
     setup [:fixture]
 
     test "renders lists all transactions", %{conn: conn, user: user, account: account, transaction: transaction} do
+      {:ok, conn: conn} = setToken(conn, user)
       conn = get(conn, Routes.transaction_path(conn, :index, user.id, account.id))
       assert json_response(conn, 200) == [
         %{

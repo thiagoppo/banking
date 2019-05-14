@@ -1,6 +1,7 @@
 defmodule BankingWeb.UserControllerTest do
   use BankingWeb.ConnCase
 
+  alias Banking.Guardian
   alias Banking.UserService
 
   @create_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
@@ -11,6 +12,12 @@ defmodule BankingWeb.UserControllerTest do
     {:ok, user: user}
   end
 
+  def setToken(conn, user) do
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    conn = put_req_header(conn, "authorization", "Bearer #{token}")
+    {:ok, conn: conn}
+  end
+
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
@@ -19,6 +26,7 @@ defmodule BankingWeb.UserControllerTest do
     setup [:fixture]
 
     test "renders lists all users", %{conn: conn, user: user} do
+      {:ok, conn: conn} = setToken(conn, user)
       conn = get(conn, Routes.user_path(conn, :index))
       assert json_response(conn, 200) == [
         %{
@@ -35,6 +43,7 @@ defmodule BankingWeb.UserControllerTest do
     setup [:fixture]
 
     test "renders user detail", %{conn: conn, user: user} do
+      {:ok, conn: conn} = setToken(conn, user)
       conn = get(conn, Routes.user_path(conn, :show, user.id))
       assert json_response(conn, 200) == %{
         "id" => user.id,
