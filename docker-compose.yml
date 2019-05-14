@@ -7,6 +7,8 @@ services:
       - "4000:4000"
     volumes:
       - .:/app
+    environment:
+      DATABASE_URL: db
     working_dir: /app
     command: /bin/sh -c "cd /app && mix local.hex --force && mix local.rebar --force && mix deps.get && mix ecto.setup && mix phx.server"
     links:

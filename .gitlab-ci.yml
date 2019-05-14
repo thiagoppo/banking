@@ -1,5 +1,8 @@
 variables:
   MIX_ENV: "test"
+  DATABASE_URL: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
 
 stages:
   - build

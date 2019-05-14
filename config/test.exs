@@ -5,7 +5,7 @@ config :banking, Banking.Repo,
   username: "postgres",
   password: "postgres",
   database: "banking_test",
-  hostname: "db",
+  hostname: System.get_env("DATABASE_URL"),
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,

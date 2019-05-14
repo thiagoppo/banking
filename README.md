@@ -1,5 +1,8 @@
 # Banking
 
+[![build status](https://gitlab.com/thiagoppo/banking/badges/master/build.svg)](https://gitlab.com/thiagoppo/banking/commits/master)
+[![coverage report](https://gitlab.com/thiagoppo/banking/badges/master/coverage.svg)](https://gitlab.com/thiagoppo/banking/commits/master)
+
 ## Technologies
   - Elixir
   - Phoenix

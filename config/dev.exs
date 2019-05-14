@@ -5,7 +5,7 @@ use Mix.Config
     username: "postgres",
     password: "postgres",
     database: "banking_dev",
-    hostname: "db",
+    hostname: System.get_env("DATABASE_URL"),
     show_sensitive_data_on_connection_error: true,
     pool_size: 10
 
