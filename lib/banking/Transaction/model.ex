@@ -1,24 +1,23 @@
-defmodule Banking.Account do
+defmodule Banking.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
 
   alias Banking.Account
-  alias Banking.User
   alias Banking.Transaction
 
-  schema "accounts" do
-    field :value, :float, default: 0.00
-    belongs_to :user, User
-    has_many :transactions, Transaction
+  schema "transactions" do
+    belongs_to :account, Account
+    field :type, :string
+    field :value, :float
 
     timestamps()
   end
 
-  def changeset(%Account{} = account, params \\ %{}) do
-    account
-    |> cast(params, [:value])
-    |> cast_assoc(:user)
-    |> validate_required([:value])
+  def changeset(%Transaction{} = transaction, params \\ %{}) do
+    transaction
+    |> cast(params, [:type, :value])
+    |> cast_assoc(:account)
+    |> validate_required([:type, :value])
     |> validate_is_not_negative(:value)
   end
 

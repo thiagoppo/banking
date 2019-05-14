@@ -1,5 +1,6 @@
 defmodule Banking.AccountService do
   alias Banking.Support.Email.EmailService
+  alias Banking.TransactionService
   alias Banking.Repo
   alias Banking.Account
   alias Banking.User
@@ -22,6 +23,7 @@ defmodule Banking.AccountService do
     account = get!(id)
     value = account.value - value
     with {:ok, account } <- update(account, %{value: value}) do
+      TransactionService.create(account, %{type: "DRAW_OUT", value: value})
       EmailService.send("A draw was made to your account. Your current balance is #{value}")
       {:ok, account}
     end
@@ -35,8 +37,10 @@ defmodule Banking.AccountService do
     destiny_account_value = destiny_account.value + value
 
     case update(from_account, %{value: from_account_value}) do
-      {:ok, _} ->
+      {:ok, from_account} ->
         update(destiny_account, %{value: destiny_account_value})
+        TransactionService.create(from_account, %{type: "TRANSFER", value: value})
+        TransactionService.create(destiny_account, %{type: "TRANSFER", value: value})
         {:ok, get!(from_id)}
       {:error, changeset} -> {:error, changeset}
     end

@@ -1,9 +1,10 @@
 defmodule Banking.Account.AccountServiceTest do
   use Banking.DataCase
 
+  alias Banking.User
   alias Banking.Account
   alias Banking.AccountService
-  alias Banking.User
+  alias Banking.TransactionService
 
   @user_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
   @create_attrs %{value: 15.00}
@@ -79,6 +80,10 @@ defmodule Banking.Account.AccountServiceTest do
       assert {:ok, %Account{} = account} = AccountService.draw_out(account.id, 4.00)
       assert account.user_id == user.id
       assert account.value == 11.00
+
+      transaction = TransactionService.filter_by_account_id(account.id) |> List.first()
+      assert transaction.type == "DRAW_OUT"
+      assert transaction.value == 11.00
     end
 
     test "should not draw if the final result", %{account: account} do
@@ -102,6 +107,14 @@ defmodule Banking.Account.AccountServiceTest do
       assert {:ok, %Account{} = account} = AccountService.transfer(account.id, destiny_account.id, 4.00)
       assert account.value == 11.00
       assert AccountService.get!(destiny_account.id).value == 19.00
+
+      transaction = TransactionService.filter_by_account_id(account.id) |> List.first()
+      assert transaction.type == "TRANSFER"
+      assert transaction.value == 4.00
+
+      transaction = TransactionService.filter_by_account_id(destiny_account.id) |> List.first()
+      assert transaction.type == "TRANSFER"
+      assert transaction.value == 4.00
     end
 
     test "not transfer when the account balance is negative", %{account: account} do
