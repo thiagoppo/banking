@@ -4,6 +4,7 @@ defmodule Banking.User do
 
   alias Banking.User
   alias Banking.Account
+  alias Comeonin.Bcrypt
 
   schema "users" do
     field :email, :string
@@ -20,5 +21,16 @@ defmodule Banking.User do
     |> validate_required([:email, :name, :password])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
+    |> put_password_hash()
+  end
+
+  defp put_password_hash(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: password}}
+        ->
+          put_change(changeset, :password, Bcrypt.hashpwsalt(password))
+      _ ->
+          changeset
+    end
   end
 end

@@ -3,6 +3,7 @@ defmodule Banking.User.UserServiceTest do
 
   alias Banking.User
   alias Banking.UserService
+  alias Comeonin.Bcrypt
 
   @create_attrs %{name: "Teste", email: "teste@teste.com", password: "teste"}
   @invalid_attrs %{name: nil, email: nil, password: nil}
@@ -33,7 +34,7 @@ defmodule Banking.User.UserServiceTest do
       assert {:ok, %User{} = user} = UserService.create(@create_attrs)
       assert user.name == "Teste"
       assert user.email == "teste@teste.com"
-      assert user.password == "teste"
+      assert Bcrypt.checkpw("teste", user.password) === true
     end
 
     test "create user and account with value 1000.00" do
