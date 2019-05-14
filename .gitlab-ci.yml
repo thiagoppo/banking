@@ -1,6 +1,6 @@
 variables:
   MIX_ENV: "test"
-  DATABASE_URL: localhost
+  DATABASE_URL: db
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
 
@@ -23,6 +23,7 @@ test:
   stage: test
   services:
     - postgres:11
+    alias: db
   script:
     - "mix ecto.setup"
     - "mix coveralls.html | tee cov.out"
