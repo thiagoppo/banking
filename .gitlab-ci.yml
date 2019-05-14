@@ -1,0 +1,36 @@
+variables:
+  MIX_ENV: "test"
+
+stages:
+  - build
+  - test
+  - post-test
+
+.job_template: &job_definition
+  image: elixir:1.8.1
+  before_script:
+    - apt-get update
+    - apt-get install -y postgresql-client
+    - mix local.hex --force
+    - mix local.rebar --force
+    - mix deps.get --only test
+
+test:
+  <<: *job_definition
+  stage: test
+  services:
+    - postgres:11
+  script:
+    - "mix ecto.setup"
+    - "mix coveralls.html | tee cov.out"
+  artifacts:
+    paths:
+      - cov.out
+      - cover/
+
+coverage:
+  image: alpine
+  stage: post-test
+  script:
+    - cat cov.out
+  coverage: '/\[TOTAL\]\s+(\d+\.\d+%)$/'
